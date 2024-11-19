@@ -4,14 +4,15 @@ import com.nasya.blog.entity.Post;
 import lombok.Getter;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class PostService {
-    Post post = new Post(1, "MAKAN", "Makan itu sangat menyenangkan", "makan-menyenangkan", true, false, 1, 1);
-    Post post2 = new Post(2, "Mandi Air Hangat", "Makan itu sangat menyenangkan", "mandi-menyenangkan", true, false, 1, 1);
+    Post post = new Post(1, "MAKAN", "Makan itu sangat menyenangkan", "makan-menyenangkan", true, false, BigInteger.valueOf(1), BigInteger.valueOf(1));
+    Post post2 = new Post(2, "Mandi Air Hangat", "Makan itu sangat menyenangkan", "mandi-menyenangkan", true, false, BigInteger.valueOf(1), BigInteger.valueOf(1));
 
     @Getter
     List<Post> posts = new ArrayList<>(Arrays.asList(post,post2));
