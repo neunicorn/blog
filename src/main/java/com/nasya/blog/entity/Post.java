@@ -34,4 +34,7 @@ public class Post {
 
     @Column(name = "updated_at")
     private BigInteger updatedAt;
+
+    @Column(name = "published_at")
+    private BigInteger publishedAt;
 }

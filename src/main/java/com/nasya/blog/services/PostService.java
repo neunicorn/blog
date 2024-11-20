@@ -2,10 +2,11 @@ package com.nasya.blog.services;
 
 import com.nasya.blog.entity.Post;
 import com.nasya.blog.repository.PostRepository;
-import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigInteger;
+import java.time.Instant;
 import java.util.List;
 
 @Service
@@ -23,6 +24,9 @@ public class PostService {
     }
 
     public Post createPost(Post post){
+
+        post.setCreatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
+        post.setUpdatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         postRepository.save(post);
         return post;
     }
@@ -51,8 +55,9 @@ public class PostService {
     public Post publishPost(Integer id){
         Post searchPost = postRepository.findById(id).orElse(null);
         if(searchPost == null) return null;
-        
+
         searchPost.setPublished(true);
+        searchPost.setPublishedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         postRepository.save(searchPost);
         return searchPost;
     }
