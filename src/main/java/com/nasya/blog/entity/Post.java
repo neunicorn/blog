@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigInteger;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -37,4 +38,7 @@ public class Post {
 
     @Column(name = "published_at")
     private BigInteger publishedAt;
+
+    @OneToMany()
+    private List<Comment> comment;
 }
