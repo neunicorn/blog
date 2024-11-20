@@ -17,9 +17,9 @@ public class CommentController {
 
     @GetMapping(path = "/")
     public List<Comment> getComments(@RequestParam(name = "postSlug", required = true) String postSlug,
-                                     @RequestParam(name = "page_no", required = false, defaultValue = "0") Integer page_no,
+                                     @RequestParam(name = "pageNo", required = false, defaultValue = "0") Integer pageNo,
                                      @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit){
-        return commentService.getComments(postSlug, page_no, limit);
+        return commentService.getComments(postSlug, pageNo, limit);
     }
 
     @GetMapping(path = "/{id}")
