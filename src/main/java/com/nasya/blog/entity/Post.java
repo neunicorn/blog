@@ -1,5 +1,6 @@
 package com.nasya.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -40,6 +41,10 @@ public class Post {
     @Column(name = "published_at")
     private BigInteger publishedAt;
 
+    @Column(name="comment_count")
+    private Integer commentCount;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post", orphanRemoval = true)
+    @JsonIgnore
     private List<Comment> comments;
 }

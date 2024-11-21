@@ -5,9 +5,9 @@ import com.nasya.blog.entity.Post;
 import com.nasya.blog.repository.CommentRepository;
 import com.nasya.blog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -22,16 +22,26 @@ public class CommentService {
 
     private PostRepository postRepository;
 
+    @Transactional
     public Comment createPost(Comment request, Integer post_id){
         if(Objects.isNull(request)){
             return null;
         }
         Post post = postRepository.findById(post_id).orElse(null);
+        if(post == null){
+            return null;
+        }
+
 
         request.setCreated_at(BigInteger.valueOf(Instant.now().getEpochSecond()));
         request.setPost(post);
 
-        return commentRepository.save(request);
+        request = commentRepository.save(request);
+
+        post.setCommentCount(post.getCommentCount() + 1);
+        postRepository.save(post);
+
+        return request;
     };
 
     public List<Comment> getComments(String postSlug, Integer pageNo, Integer limit){
