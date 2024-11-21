@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -39,6 +40,6 @@ public class Post {
     @Column(name = "published_at")
     private BigInteger publishedAt;
 
-    @OneToMany()
-    private List<Comment> comment;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "post", orphanRemoval = true)
+    private List<Comment> comments;
 }

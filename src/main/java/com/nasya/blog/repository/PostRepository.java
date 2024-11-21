@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
     Optional<Post> findBySlug(String slug);
-    Optional<Post> findBySlugAndDeleted(String slug, boolean isDeleted);
+    Optional<Post> findBySlugAndIsDeleted(String slug, boolean isDeleted);
 }

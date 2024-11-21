@@ -5,6 +5,8 @@ import com.nasya.blog.entity.Post;
 import com.nasya.blog.repository.CommentRepository;
 import com.nasya.blog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
@@ -24,21 +26,21 @@ public class CommentService {
         if(Objects.isNull(request)){
             return null;
         }
-
         Post post = postRepository.findById(post_id).orElse(null);
 
-        Comment commentDummy= new Comment();
-        commentDummy.setPost(post);
-        commentDummy.setCreated_at(BigInteger.valueOf(Instant.now().getEpochSecond()));
+        request.setCreated_at(BigInteger.valueOf(Instant.now().getEpochSecond()));
+        request.setPost(post);
 
-        return commentRepository.save(commentDummy);
+        return commentRepository.save(request);
     };
 
     public List<Comment> getComments(String postSlug, Integer pageNo, Integer limit){
         if(Objects.isNull(postSlug)) return null;
 
-        Post post = postRepository.findBySlug(postSlug).orElse(null);
-        return commentRepository.findCommentByPost(post);
+        Post post = postRepository.findBySlugAndIsDeleted(postSlug, false).orElse(null);
+        if(Objects.isNull(post)) return null;
+        PageRequest pageRequest = PageRequest.of(pageNo, limit);
+        return commentRepository.findByPostId(post.getId(), pageRequest).getContent();
     };
 
     public Comment getComment(Integer comment_id){

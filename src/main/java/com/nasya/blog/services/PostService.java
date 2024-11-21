@@ -20,7 +20,7 @@ public class PostService {
     }
 
     public Post getPostBySlug(String slug){
-        return postRepository.findBySlugAndDeleted(slug, false).orElse(null);
+        return postRepository.findBySlugAndIsDeleted(slug, false).orElse(null);
     }
 
     public Post createPost(Post post){
@@ -32,7 +32,7 @@ public class PostService {
     }
 
     public Post updatePostBySlug(String slug, Post post){
-        Post savedPost = postRepository.findBySlugAndDeleted(slug, false).orElse(null);
+        Post savedPost = postRepository.findBySlugAndIsDeleted(slug, false).orElse(null);
         if(savedPost == null) return null;
 
         savedPost.setTitle(post.getTitle());

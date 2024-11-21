@@ -1,5 +1,6 @@
 package com.nasya.blog.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,6 +12,7 @@ import java.math.BigInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Table(name = "comments")
 public class Comment {
 
     @Id
@@ -21,7 +23,9 @@ public class Comment {
     private String body;
     private BigInteger created_at;
 
-    @ManyToOne()
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    @JsonIgnore
     private Post post;
 
 }
