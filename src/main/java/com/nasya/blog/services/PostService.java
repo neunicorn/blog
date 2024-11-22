@@ -1,9 +1,17 @@
 package com.nasya.blog.services;
 
 import com.nasya.blog.entity.Post;
+import com.nasya.blog.exception.ApiException;
+import com.nasya.blog.mapper.PostMapper;
+import com.nasya.blog.model.request.post.CreatePostRequest;
+import com.nasya.blog.model.request.post.GetPostsRequest;
+import com.nasya.blog.model.request.post.UpdatePostRequest;
+import com.nasya.blog.model.response.post.*;
 import com.nasya.blog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigInteger;
 import java.time.Instant;
@@ -15,51 +23,62 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
-    public List<Post> getPosts(){
-        return postRepository.findAll(  );
+    public List<GetPostResponse> getPosts(GetPostsRequest request){
+        List<Post> posts = postRepository.findByIsDeleted(false);
+
+        return posts.stream().map(PostMapper.INSTANCE::mapGetResponse).toList();
     }
 
-    public Post getPostBySlug(String slug){
-        return postRepository.findBySlugAndIsDeleted(slug, false).orElse(null);
+    public GetPostResponse getPostBySlug(String slug){
+        Post post = postRepository.findFirstBySlugAndIsDeleted(slug, false)
+                .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
+        return PostMapper.INSTANCE.mapGetResponse(post);
     }
 
-    public Post createPost(Post post){
+    @Transactional
+    public CreatePostResponse createPost(CreatePostRequest request) {
 
+        Post post = PostMapper.INSTANCE.map(request);
         post.setCreatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         post.setUpdatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
+        post.setCommentCount(0);
         postRepository.save(post);
-        return post;
+
+        return PostMapper.INSTANCE.map(post);
     }
 
-    public Post updatePostBySlug(String slug, Post post){
-        Post savedPost = postRepository.findBySlugAndIsDeleted(slug, false).orElse(null);
-        if(savedPost == null) return null;
+    public UpdateBySlugPostResponse updatePostBySlug(String slug, UpdatePostRequest request){
+        Post post = postRepository.findFirstBySlugAndIsDeleted(slug, false)
+                .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
 
-        savedPost.setTitle(post.getTitle());
-        savedPost.setSlug(post.getSlug());
-        postRepository.save(savedPost);
+        post.setBody(request.getBody());
+        post.setTitle(request.getTitle());
+        post.setSlug(request.getSlug());
+        post.setUpdatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
+        postRepository.save(post);
 
-        return savedPost;
+        return PostMapper.INSTANCE.mapUpdatePostResponse(post);
     }
 
-    public String deletePostById(Integer id){
-        Post postForDelete = postRepository.findById(id).orElse(null);
+    public DeletePostByIdResponse deletePostById(Integer id){
+        Post postForDelete = postRepository.findById(id)
+                .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
 
-        if(postForDelete == null) return null;
-
+        //implement soft delete
         postForDelete.setDeleted(true);
         postRepository.save(postForDelete);
 
-        return "post deleted successfully";
+        return DeletePostByIdResponse.builder().postId(id).build();
     }
 
-    public Post publishPost(Integer id){
-        Post searchPost = postRepository.findById(id).orElse(null);
-        if(searchPost == null) return null;
+    public PublishPostResponse publishPost(Integer id){
+        Post searchPost = postRepository.findById(id)
+                .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
 
         searchPost.setPublished(true);
         searchPost.setPublishedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         postRepository.save(searchPost);
-        return searchPost;
+
+        return PublishPostResponse.builder().publishedAt(searchPost.getPublishedAt()).build();
     }
 }

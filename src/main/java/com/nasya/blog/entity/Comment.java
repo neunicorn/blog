@@ -21,7 +21,8 @@ public class Comment {
     private String name;
     private String email;
     private String body;
-    private BigInteger created_at;
+    @Column(name = "created_at")
+    private BigInteger createdAat;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
