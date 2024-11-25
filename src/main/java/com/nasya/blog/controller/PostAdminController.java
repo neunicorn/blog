@@ -1,6 +1,5 @@
 package com.nasya.blog.controller;
 
-import com.nasya.blog.entity.Post;
 import com.nasya.blog.model.request.post.CreatePostRequest;
 import com.nasya.blog.model.request.post.GetPostsRequest;
 import com.nasya.blog.model.request.post.UpdatePostRequest;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/posts")
-public class PostController {
+@RequestMapping("/api/admin/posts")
+public class PostAdminController {
 
     @Autowired
     private PostService postService;

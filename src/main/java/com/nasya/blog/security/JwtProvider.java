@@ -1,6 +1,7 @@
 package com.nasya.blog.security;
 
 import com.nasya.blog.properties.SecretProperties;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,5 +37,24 @@ public class JwtProvider {
     private SecretKey generateKey() {
         byte[] decodeKey = Base64.getDecoder().decode(secretProperties.getJwtSecret());
         return Keys.hmacShaKeyFor(decodeKey);
+    }
+
+    public String getUsername(String token){
+        Claims claims = getClaim(token);
+        return claims.getSubject();
+    }
+
+    //validate token isExpired?
+    public boolean isExpired(String token){
+        Claims claims = getClaim(token);
+        return claims.getExpiration().before(Date.from(Instant.now()));
+    }
+
+    private Claims getClaim(String token){
+        return Jwts.parser()
+                .verifyWith(generateKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }

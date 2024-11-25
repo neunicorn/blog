@@ -11,15 +11,15 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/comments")
-public class CommentController {
+@RequestMapping("/api/admin/comments")
+public class CommentAdminController {
 
     @Autowired
     private CommentService commentService;
 
 
     @GetMapping(path = "/")
-    public List<GetCommentResponse> getComments(@RequestParam(name = "postSlug", required = true) String postSlug,
+    public List<GetCommentResponse> getComments(@RequestParam(name = "postSlug", required = false) String postSlug,
                                                 @RequestParam(name = "pageNo", required = false, defaultValue = "0") Integer pageNo,
                                                 @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit){
         return commentService.getComments(postSlug, pageNo, limit);
