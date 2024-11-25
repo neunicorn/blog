@@ -28,12 +28,7 @@ public class WebSecurity {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/v1/user/create")
-                        .permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/v1/auth/login")
-                        .permitAll()
-                        .anyRequest().authenticated())
+                .authorizeHttpRequests((requests) -> requests.anyRequest().permitAll())
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
         return http.build();
@@ -41,7 +36,7 @@ public class WebSecurity {
 
     @Bean
     public AuthenticationManager authenticationManager() throws Exception {
-        return new ProviderManager();
+        return new ProviderManager(authenticationProvider());
     }
 
     @Bean

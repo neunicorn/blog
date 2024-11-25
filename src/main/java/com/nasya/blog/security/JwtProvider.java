@@ -1,8 +1,9 @@
 package com.nasya.blog.security;
 
+import com.nasya.blog.properties.SecretProperties;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -16,12 +17,12 @@ import java.util.Map;
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    @Autowired
+    private SecretProperties secretProperties;
 
     public String generateToken(UserDetails userDetails) {
         Map<String, String> claims = new HashMap<>();
-        claims.put("iss", "http://blog.nasya.com");
+        claims.put("iss", secretProperties.getJwtIss());
         Instant now = Instant.now();
         return Jwts.builder()
                 .claims(claims)
@@ -33,7 +34,7 @@ public class JwtProvider {
     }
 
     private SecretKey generateKey() {
-        byte[] decodeKey = Base64.getDecoder().decode(jwtSecret);
+        byte[] decodeKey = Base64.getDecoder().decode(secretProperties.getJwtSecret());
         return Keys.hmacShaKeyFor(decodeKey);
     }
 }
