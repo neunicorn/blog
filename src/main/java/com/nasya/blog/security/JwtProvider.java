@@ -29,7 +29,7 @@ public class JwtProvider {
                 .claims(claims)
                 .subject(userDetails.getUsername())
                 .issuedAt(Date.from(now))
-                .expiration(Date.from(now.plusSeconds(10*60)))
+                .expiration(Date.from(now.plusSeconds(10*60*24)))
                 .signWith(generateKey())
                 .compact();
     }

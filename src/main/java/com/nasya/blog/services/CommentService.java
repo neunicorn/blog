@@ -54,8 +54,8 @@ public class CommentService {
 
         Post post = postRepository.findFirstBySlugAndIsDeleted(postSlug, false)
                 .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
-        PageRequest pageRequest = PageRequest.of(pageNo, limit);
 
+        PageRequest pageRequest = PageRequest.of(pageNo, limit);
         List<Comment> comments = commentRepository.findByPostId(post.getId(), pageRequest).getContent();
 
         return comments.stream().map(CommentMapper.INSTANCE::mapGetCommentResponse)

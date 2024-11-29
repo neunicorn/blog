@@ -1,5 +1,6 @@
 package com.nasya.blog.services;
 
+import com.nasya.blog.entity.Category;
 import com.nasya.blog.entity.Post;
 import com.nasya.blog.exception.ApiException;
 import com.nasya.blog.mapper.PostMapper;
@@ -7,8 +8,10 @@ import com.nasya.blog.model.request.post.CreatePostRequest;
 import com.nasya.blog.model.request.post.GetPostsRequest;
 import com.nasya.blog.model.request.post.UpdatePostRequest;
 import com.nasya.blog.model.response.post.*;
+import com.nasya.blog.repository.CategoryRepository;
 import com.nasya.blog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,15 +19,20 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostService {
 
     @Autowired
     private PostRepository postRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     public List<GetPostResponse> getPosts(GetPostsRequest request){
-        List<Post> posts = postRepository.findByIsDeleted(false);
+
+        PageRequest pageRequest = PageRequest.of(request.getPageNo(), request.getLimit());
+        List<Post> posts = postRepository.findByIsDeleted(false, pageRequest).getContent();
 
         return posts.stream().map(PostMapper.INSTANCE::mapGetResponse).toList();
     }
@@ -38,13 +46,14 @@ public class PostService {
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest request) {
 
-        Post post = PostMapper.INSTANCE.map(request);
+
+        Post post = PostMapper.INSTANCE.mapCreatePostRequest(request);
         post.setCreatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         post.setUpdatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         post.setCommentCount(0);
         postRepository.save(post);
 
-        return PostMapper.INSTANCE.map(post);
+        return PostMapper.INSTANCE.mapCreatePostResponse(post);
     }
 
     public UpdateBySlugPostResponse updatePostBySlug(String slug, UpdatePostRequest request){

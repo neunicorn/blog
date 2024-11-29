@@ -19,7 +19,7 @@ public class PostPublicController {
     @Autowired
     private PostService postService;
 
-    @GetMapping(value = "/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping
     public List<GetPostResponse> getPosts(@RequestParam(required = false, defaultValue = "0") Integer pageNo,
                                           @RequestParam(required = false, defaultValue = "10") Integer limit){
 

@@ -25,4 +25,6 @@ public class CreatePostRequest {
     @Size(min=2, message = "Size minimal 2")
     private String slug;
 
+    private Integer categoryId;
+
 }

@@ -18,14 +18,14 @@ public class CommentPublicController {
     private CommentService commentService;
 
 
-    @GetMapping(path = "/")
+    @GetMapping
     public List<GetCommentResponse> getComments(@RequestParam(name = "postSlug", required = true) String postSlug,
                                                 @RequestParam(name = "pageNo", required = false, defaultValue = "0") Integer pageNo,
                                                 @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit){
         return commentService.getComments(postSlug, pageNo, limit);
     }
 
-    @PostMapping(path = "/")
+    @PostMapping
     public CreateCommentResponse createComment(@Valid  @RequestBody CreateCommentRequest request){
         return commentService.createPost(request);
     }

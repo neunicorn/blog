@@ -24,7 +24,7 @@ public class GetCommentResponse {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
-    private static class Post{
+    public static class Post{
         private String title;
         private String slug;
     }

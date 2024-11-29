@@ -18,7 +18,7 @@ public class CommentAdminController {
     private CommentService commentService;
 
 
-    @GetMapping(path = "/")
+    @GetMapping
     public List<GetCommentResponse> getComments(@RequestParam(name = "postSlug", required = false) String postSlug,
                                                 @RequestParam(name = "pageNo", required = false, defaultValue = "0") Integer pageNo,
                                                 @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit){
@@ -30,7 +30,7 @@ public class CommentAdminController {
         return commentService.getComment(id);
     }
 
-    @PostMapping(path = "/")
+    @PostMapping
     public CreateCommentResponse createComment(@Valid  @RequestBody CreateCommentRequest request){
         return commentService.createPost(request);
     }
