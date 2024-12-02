@@ -26,7 +26,7 @@ public class Post {
     private String slug;
 
     @Column(name = "is_published")
-    private boolean isPublished;
+    private boolean published;
 
     @Column(name= "is_deleted")
     private boolean isDeleted;

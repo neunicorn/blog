@@ -6,6 +6,7 @@ import com.nasya.blog.model.response.post.CreatePostResponse;
 import com.nasya.blog.model.response.post.GetPostResponse;
 import com.nasya.blog.model.response.post.UpdateBySlugPostResponse;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 @Mapper

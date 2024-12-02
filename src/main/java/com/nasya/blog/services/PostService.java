@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PostService {
@@ -32,8 +31,7 @@ public class PostService {
     public List<GetPostResponse> getPosts(GetPostsRequest request){
 
         PageRequest pageRequest = PageRequest.of(request.getPageNo(), request.getLimit());
-        List<Post> posts = postRepository.findByIsDeleted(false, pageRequest).getContent();
-
+        List<Post> posts = postRepository.findAllByIsDeleted(false, pageRequest).getContent();
         return posts.stream().map(PostMapper.INSTANCE::mapGetResponse).toList();
     }
 
@@ -46,8 +44,11 @@ public class PostService {
     @Transactional
     public CreatePostResponse createPost(CreatePostRequest request) {
 
+        Category category = categoryRepository.findById(request.getCategoryId())
+                .orElseThrow(()-> new ApiException("Category_not_fodund", HttpStatus.BAD_REQUEST));
 
         Post post = PostMapper.INSTANCE.mapCreatePostRequest(request);
+        post.setCategory(category);
         post.setCreatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         post.setUpdatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
         post.setCommentCount(0);
@@ -84,8 +85,8 @@ public class PostService {
         Post searchPost = postRepository.findById(id)
                 .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
 
-        searchPost.setPublished(true);
         searchPost.setPublishedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
+        searchPost.setPublished(true);
         postRepository.save(searchPost);
 
         return PublishPostResponse.builder().publishedAt(searchPost.getPublishedAt()).build();

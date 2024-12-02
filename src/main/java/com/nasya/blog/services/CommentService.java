@@ -31,7 +31,7 @@ public class CommentService {
     private PostRepository postRepository;
 
     @Transactional
-    public CreateCommentResponse createPost(CreateCommentRequest request){
+    public CreateCommentResponse createComment(CreateCommentRequest request){
         if(Objects.isNull(request)){
             throw new ApiException("BAD_REQUEST", HttpStatus.BAD_REQUEST);
         }
@@ -39,7 +39,7 @@ public class CommentService {
                 .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
 
         Comment comment= CommentMapper.INSTANCE.mapCreateComment(request);
-                comment.setCreatedAat(BigInteger.valueOf(Instant.now().getEpochSecond()));
+                comment.setCreatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
                 comment.setPost(post);
 
         commentRepository.save(comment);

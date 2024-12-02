@@ -28,16 +28,22 @@ public class WebSecurity {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    @Autowired
+    private CorsConfig corsConfig;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests((requests) -> requests
-                        .requestMatchers("/api/public/**")
-                        .permitAll()
-                        .requestMatchers("/api/admin/**").authenticated()
-                        .anyRequest().permitAll())
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+        http
+            .cors(httpSecurityCorsConfigurer -> httpSecurityCorsConfigurer
+                        .configurationSource(corsConfig))
+            .csrf(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/api/public/**")
+                .permitAll()
+                .requestMatchers("/api/admin/**").authenticated()
+                .anyRequest().permitAll())
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

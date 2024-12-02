@@ -22,7 +22,7 @@ public class Comment {
     private String email;
     private String body;
     @Column(name = "created_at")
-    private BigInteger createdAat;
+    private BigInteger createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")

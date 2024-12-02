@@ -51,7 +51,10 @@ public class CategoryServices {
 
     public CreateCategoryResponse createCategory(CreateCategoryRequest request) {
         Category category = CategoryMapper.INSTANCE.mapCreateCategory(request);
-        category.setCreatedAt(BigInteger.valueOf(Instant.now().getEpochSecond()));
+
+        BigInteger date = BigInteger.valueOf(Instant.now().getEpochSecond());
+        category.setCreatedAt(date);
+        category.setUpdatedAt(date);
         categoryRepository.save(category);
         return CategoryMapper.INSTANCE.mapCreateCategoryResponse(category);
     }

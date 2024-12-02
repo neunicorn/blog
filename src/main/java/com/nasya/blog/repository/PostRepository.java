@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Integer> {
 
 
-    Page<Post> findByIsDeleted(boolean isDeleted, Pageable pageable);
+    Page<Post> findAllByIsDeleted(boolean isDeleted, Pageable pageable);
 
     Optional<Post> findFirstBySlugAndIsDeleted(String slug, boolean isDeleted);
 

@@ -24,7 +24,7 @@ public class PostRepositoryTest {
     @Test
     void findByIsDelete_givenNoPosts_sholudReturnEmpty(){
 
-        List<Post> posts = postRepository.findByIsDeleted(false,
+        List<Post> posts = postRepository.findAllByIsDeleted(false,
                 PageRequest.of(0, 10)).getContent();
         Assertions.assertNotNull(posts);
         Assertions.assertEquals(0, posts.size());
@@ -43,7 +43,7 @@ public class PostRepositoryTest {
         postRepository.save(post1);
         postRepository.save(post2);
 
-        List<Post> posts = postRepository.findByIsDeleted(false,
+        List<Post> posts = postRepository.findAllByIsDeleted(false,
                 PageRequest.of(0, 10)).getContent();
         Assertions.assertNotNull(posts);
         Assertions.assertEquals(1, posts.size());

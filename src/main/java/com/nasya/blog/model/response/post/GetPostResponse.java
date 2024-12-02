@@ -17,7 +17,17 @@ public class GetPostResponse {
     private String title;
     private String body;
     private String slug;
-    private boolean isPublished;
     private BigInteger publishedAt;
     private Integer commentCount;
+    private Category category;
+    private boolean published;
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class Category{
+        private String name;
+        private String slug;
+    }
 }

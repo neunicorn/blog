@@ -16,7 +16,7 @@ public class GetCommentResponse {
     private String name;
     private String email;
     private String body;
-    private BigInteger createdAat;
+    private BigInteger createdAt;
     private Post post;
 
 
