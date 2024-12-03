@@ -11,6 +11,9 @@ import com.nasya.blog.model.response.post.*;
 import com.nasya.blog.repository.CategoryRepository;
 import com.nasya.blog.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,7 @@ public class PostService {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Cacheable(value = "PostService.getPosts", key = "{#request.pageNo, #request.limit}")
     public List<GetPostResponse> getPosts(GetPostsRequest request){
 
         PageRequest pageRequest = PageRequest.of(request.getPageNo(), request.getLimit());
@@ -35,6 +39,7 @@ public class PostService {
         return posts.stream().map(PostMapper.INSTANCE::mapGetResponse).toList();
     }
 
+    @Cacheable(value = "PostService.getPostBySlug", key = "{#slug}")
     public GetPostResponse getPostBySlug(String slug){
         Post post = postRepository.findFirstBySlugAndIsDeleted(slug, false)
                 .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
@@ -42,6 +47,7 @@ public class PostService {
     }
 
     @Transactional
+    @CacheEvict(value = "PostService.getPosts", key = "{#request.pageNo, #request.limit}")
     public CreatePostResponse createPost(CreatePostRequest request) {
 
         Category category = categoryRepository.findById(request.getCategoryId())
@@ -57,6 +63,7 @@ public class PostService {
         return PostMapper.INSTANCE.mapCreatePostResponse(post);
     }
 
+    @CachePut(value = "PostService.getPostBySlug", key = "{#slug}")
     public UpdateBySlugPostResponse updatePostBySlug(String slug, UpdatePostRequest request){
         Post post = postRepository.findFirstBySlugAndIsDeleted(slug, false)
                 .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
@@ -70,6 +77,7 @@ public class PostService {
         return PostMapper.INSTANCE.mapUpdatePostResponse(post);
     }
 
+    @CacheEvict(value = "PostService.getPostBySlug", key = "{#slug}")
     public DeletePostByIdResponse deletePostById(Integer id){
         Post postForDelete = postRepository.findById(id)
                 .orElseThrow(()-> new ApiException("POST_NOT_FOUND", HttpStatus.NOT_FOUND));
