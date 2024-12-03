@@ -40,15 +40,17 @@ public class AuthController {
     @Autowired
     private Bucket4jConfig bucket4jConfig;
 
-    private final Map<String, Bucket> bucketMap = new ConcurrentHashMap<>();
+//    private final Map<String, Bucket> bucketMap = new ConcurrentHashMap<>();
 
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request){
 
-        Bucket loginBucket = bucketMap.computeIfAbsent(
-                request.getUsername(), k -> bucket4jConfig.loginBucket()
-        );
+//        Bucket loginBucket = bucketMap.computeIfAbsent(
+//                request.getUsername(), k -> bucket4jConfig.loginBucket()
+//        );
+
+        Bucket loginBucket = bucket4jConfig.loginBucket(request.getUsername());
 
         if(!loginBucket.tryConsume(1)){
             throw new ApiException("TOO MANY REQUEST", HttpStatus.TOO_MANY_REQUESTS);
